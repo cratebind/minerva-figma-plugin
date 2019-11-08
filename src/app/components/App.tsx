@@ -4,43 +4,51 @@ import '../styles/ui.css';
 declare function require(path: string): any;
 
 const App = ({}) => {
-    const textbox = React.useRef<HTMLInputElement>(undefined);
+    // const textbox = React.useRef<HTMLInputElement>(undefined);
 
-    const countRef = React.useCallback((element: HTMLInputElement) => {
-        if (element) element.value = '5';
-        textbox.current = element;
-    }, []);
+    // const countRef = React.useCallback((element: HTMLInputElement) => {
+    //     if (element) element.value = '5';
+    //     textbox.current = element;
+    // }, []);
 
-    const onCreate = React.useCallback(() => {
-        const count = parseInt(textbox.current.value, 10);
-        parent.postMessage({pluginMessage: {type: 'create-rectangles', count}}, '*');
-    }, []);
+    // const onCreate = React.useCallback(() => {
+    //     const count = parseInt(textbox.current.value, 10);
+    //     parent.postMessage({pluginMessage: {type: 'create-rectangles', count}}, '*');
+    // }, []);
 
-    const onCancel = React.useCallback(() => {
-        parent.postMessage({pluginMessage: {type: 'cancel'}}, '*');
-    }, []);
+    // const onCancel = React.useCallback(() => {
+    //     parent.postMessage({pluginMessage: {type: 'cancel'}}, '*');
+    // }, []);
 
     React.useEffect(() => {
         // This is how we read messages sent from the plugin controller
-        window.onmessage = (event) => {
-            const { type, message } = event.data.pluginMessage;
+        window.onmessage = event => {
+            const {type, message} = event.data.pluginMessage;
             if (type === 'create-rectangles') {
                 console.log(`Figma Says: ${message}`);
-            };
-        }
+            }
+        };
     }, []);
+
+    const saveColors = () => {
+        parent.postMessage({pluginMessage: {type: 'save-colors'}}, '*');
+    };
 
     return (
         <div>
             <img src={require('../assets/logo.svg')} />
-            <h2>Rectangle Creator</h2>
+            <h2>Minerva Design System</h2>
+            <button id="create" onClick={saveColors}>
+                Save Colors
+            </button>
+            {/* <h2>Rectangle Creator</h2>
             <p>
                 Count: <input ref={countRef} />
             </p>
             <button id="create" onClick={onCreate}>
                 Create
             </button>
-            <button onClick={onCancel}>Cancel</button>
+            <button onClick={onCancel}>Cancel</button> */}
         </div>
     );
 };
