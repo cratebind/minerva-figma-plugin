@@ -1,17 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
+// import prettyFormat from 'pretty-format';
 import '../styles/ui.css';
 
 declare function require(path: string): any;
 
 const App = ({}) => {
   const [styles, setStyles] = useState('');
-  const textRef = useRef(null);
+  const textRef = useRef<HTMLTextAreaElement>(null);
   // const textbox = useRef<HTMLInputElement>(undefined);
-
-  // const countRef = useCallback((element: HTMLInputElement) => {
-  //     if (element) element.value = '5';
-  //     textbox.current = element;
-  // }, []);
 
   // const onCreate = useCallback(() => {
   //     const count = parseInt(textbox.current.value, 10);
@@ -28,7 +24,7 @@ const App = ({}) => {
       const { type, message } = event.data.pluginMessage;
       console.log({ type, message });
       if (type === 'export-styles') {
-        setStyles(JSON.stringify(message));
+        setStyles(JSON.stringify(message, null, 2));
       }
     };
   }, []);

@@ -51,9 +51,9 @@
 			"prettier --write",
 			"git add"
 		]
-  },
-  "prettier": {
-    "tabWidth": 2,
-    "singleQuote": true
-  }
+	},
+	"prettier": {
+		"tabWidth": 2,
+		"singleQuote": true
+	}
 }
