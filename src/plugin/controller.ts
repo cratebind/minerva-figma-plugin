@@ -44,8 +44,11 @@ figma.ui.onmessage = msg => {
   // }
   const components = getComponents(figma.root);
   const styles = {
-    Button: null
+    Button: {},
+    Text: {}
   };
+
+  console.log(components);
 
   components.forEach(component => {
     if (component.name === 'Button') {
@@ -65,6 +68,21 @@ figma.ui.onmessage = msg => {
           fontFamily: fontName.family,
           fontWeight: fontName.style.toLowerCase()
         }
+      };
+    }
+
+    if (component.name === 'Body Text') {
+      const textNode = component.children[0];
+      const { fontSize, lineHeight, opacity, fills } = textNode;
+      const color = convertColor(fills[0].color);
+
+      styles.Text = {
+        fontSize,
+        lineHeight: `${lineHeight.value}${
+          lineHeight.unit === 'PIXELS' ? 'px' : '%'
+        }`,
+        opacity,
+        color
       };
     }
   });
