@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-// import prettyFormat from 'pretty-format';
+import { ThemeProvider, Button, Block, Flex } from 'minerva-ui';
 import '../styles/ui.css';
 
 declare function require(path: string): any;
 
-const App = ({}) => {
+const App = () => {
   const [styles, setStyles] = useState('');
   const textRef = useRef<HTMLTextAreaElement>(null);
   // const textbox = useRef<HTMLInputElement>(undefined);
@@ -40,22 +40,44 @@ const App = ({}) => {
     }
   };
 
+  // convert styles object into a blob file
+  const data = new Blob([JSON.stringify(styles)], {
+    type: 'text/plain;charset=utf-8'
+  });
+
+  // create ObjectURL to use for downloading
+  const url = window.URL.createObjectURL(data);
+
   return (
-    <div>
-      <img src={require('../assets/logo.svg')} />
-      <h2>Minerva Design System</h2>
+    <ThemeProvider>
       <div>
-        <button id="create" onClick={saveColors}>
-          Export Theme
-        </button>
+        <img src={require('../assets/logo.svg')} />
+        <h2>Minerva Design System</h2>
+        <div>
+          <Button className="create" onClick={saveColors}>
+            Export Theme
+          </Button>
+        </div>
+        <Flex mt={4} justifyContent="center">
+          <Block>
+            <Button
+              as="a"
+              className="download-link create"
+              href={url}
+              download="theme.json"
+            >
+              Download Theme File
+            </Button>
+          </Block>
+          <Button className="create" onClick={copyStyle}>
+            Copy Theme Config
+          </Button>
+        </Flex>
+        <Block>
+          <textarea ref={textRef} value={styles} rows={10} readOnly />
+        </Block>
       </div>
-      <div>
-        <button id="create" onClick={copyStyle}>
-          Copy Theme Config
-        </button>
-        <textarea ref={textRef} value={styles} rows={10} readOnly />
-      </div>
-    </div>
+    </ThemeProvider>
   );
 };
 
