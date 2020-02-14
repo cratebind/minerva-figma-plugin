@@ -48,25 +48,40 @@ figma.ui.onmessage = msg => {
     Text: {}
   };
 
-  console.log(components);
+  console.log(components.map(component => component.name));
 
   components.forEach(component => {
-    if (component.name === 'Button') {
-      const [containerStyles, textStyles] = component.children;
-      const { fills, height, cornerRadius } = containerStyles;
+    if (component.name === 'Buttons/Primary/Normal') {
+      console.log(component);
+      // console.log(component.children);
+      // const [containerStyles, textStyles] = component.children;
+      const containerStyles = component;
+      const textStyles = component.children[0];
+      const {
+        fills,
+        height,
+        cornerRadius,
+        verticalPadding,
+        horizontalPadding
+      } = containerStyles;
       const { fontSize, fontName, letterSpacing, lineHeight } = textStyles;
+      console.log({ fills, fontName });
       styles.Button = {
         container: {
           backgroundColor: convertColor(fills[0].color),
           borderRadius: cornerRadius,
-          height
+          height,
+          paddingTop: verticalPadding,
+          paddingBottom: verticalPadding,
+          paddingLeft: horizontalPadding,
+          paddingRight: horizontalPadding
         },
         text: {
           fontSize,
           letterSpacing,
-          lineHeight,
-          fontFamily: fontName.family,
-          fontWeight: fontName.style.toLowerCase()
+          lineHeight
+          // fontFamily: fontName.family,
+          // fontWeight: fontName.style.toLowerCase()
         }
       };
     }
@@ -88,8 +103,6 @@ figma.ui.onmessage = msg => {
   });
 
   if (msg.type === 'save-colors') {
-    console.log(figma);
-    console.log({ styles });
     figma.ui.postMessage({
       type: 'export-styles',
       message: styles
