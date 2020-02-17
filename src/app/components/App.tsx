@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ThemeProvider, Button, Block, Flex } from 'minerva-ui';
-import '../styles/ui.css';
+import { ThemeProvider, Button, Block, Flex, GlobalStyles } from 'minerva-ui';
+// import '../styles/ui.css';
 
 declare function require(path: string): any;
 
 const App = () => {
-  const [styles, setStyles] = useState('');
+  const [styles, setStyles] = useState({});
   const textRef = useRef<HTMLTextAreaElement>(null);
   // const textbox = useRef<HTMLInputElement>(undefined);
 
@@ -24,7 +24,7 @@ const App = () => {
       const { type, message } = event.data.pluginMessage;
       console.log({ type, message });
       if (type === 'export-styles') {
-        setStyles(JSON.stringify(message, null, 2));
+        setStyles(message);
       }
     };
   }, []);
@@ -40,6 +40,10 @@ const App = () => {
     }
   };
 
+  console.log({ styles });
+
+  const hasStyles = Object.keys(styles).length > 0;
+
   // convert styles object into a blob file
   const data = new Blob([JSON.stringify(styles)], {
     type: 'text/plain;charset=utf-8'
@@ -50,33 +54,51 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <div>
-        <img src={require('../assets/logo.svg')} />
-        <h2>Minerva Design System</h2>
-        <div>
-          <Button className="create" onClick={saveColors}>
-            Export Theme
+      <GlobalStyles />
+      <Block p={3}>
+        <Flex flexDirection="column" justifyContent="center" textAlign="center">
+          <img src={require('../assets/logo.svg')} alt="Minerva Logo" />
+          <h2>Minerva Design System</h2>
+        </Flex>
+        <Button className="create" onClick={saveColors}>
+          Export Theme
+        </Button>
+        <Flex
+          mt={4}
+          as="fieldset"
+          flexDirection="column"
+          disabled={!hasStyles}
+          alignItems="center"
+        >
+          <a
+            href={url}
+            download="theme.json"
+            style={{ display: 'none' }}
+            aria-label="Hidden download theme link"
+            id="download-link"
+          >
+            Download Theme File
+          </a>
+          <Button
+            onClick={() => {
+              document.getElementById('download-link').click();
+            }}
+          >
+            Download Theme File
           </Button>
-        </div>
-        <Flex mt={4} justifyContent="center">
-          <Block>
-            <Button
-              as="a"
-              className="download-link create"
-              href={url}
-              download="theme.json"
-            >
-              Download Theme File
-            </Button>
-          </Block>
           <Button className="create" onClick={copyStyle}>
             Copy Theme Config
           </Button>
         </Flex>
         <Block>
-          <textarea ref={textRef} value={styles} rows={10} readOnly />
+          <textarea
+            ref={textRef}
+            value={hasStyles ? JSON.stringify(styles, null, 2) : ''}
+            rows={10}
+            readOnly
+          />
         </Block>
-      </div>
+      </Block>
     </ThemeProvider>
   );
 };
